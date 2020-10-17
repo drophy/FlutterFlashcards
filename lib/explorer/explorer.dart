@@ -3,7 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:mindspace/definitions/colors.dart';
 import 'package:mindspace/definitions/dummydata.dart';
 import 'package:mindspace/explorer/folder.dart';
-import 'package:mindspace/explorer/flashcard_set.dart';
+import 'package:mindspace/explorer/deck.dart';
 import 'package:mindspace/models/folder_object.dart';
 
 class Explorer extends StatefulWidget {
@@ -23,13 +23,6 @@ class _ExplorerState extends State<Explorer> {
     this._folderIds = this._currentFolder.folders;
     this._deckIds = this._currentFolder.decks;
   }
-
-  // TODO: delete folderNames
-  List folderNames = <String>[
-    'Vocabulary',
-    '[Anime] Shield Hero',
-    '[Anime] Sword Art Online 4: WotU',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -126,9 +119,10 @@ class _ExplorerState extends State<Explorer> {
         ],
       ),
       body: Column(children: [
-        // FOLDER DETAILS
+        ///// FOLDER DETAILS /////
         Row(
           children: [
+            // IMAGE
             Expanded(
               flex: 3,
               child: Center(
@@ -160,7 +154,7 @@ class _ExplorerState extends State<Explorer> {
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context)
                           .textTheme
-                          .headline5
+                          .headline6
                           .copyWith(color: tailwindGray100),
                     ),
                     SizedBox(height: 1 * vh),
@@ -179,7 +173,7 @@ class _ExplorerState extends State<Explorer> {
                       '70% Subject Mastery',
                       style: Theme.of(context)
                           .textTheme
-                          .subtitle2
+                          .bodyText2
                           .copyWith(color: tailwindGray100),
                     ),
                   ],
@@ -188,7 +182,7 @@ class _ExplorerState extends State<Explorer> {
             ),
           ],
         ),
-        // FOLDERS AND CARD SETS
+        ///// FOLDERS AND CARD SETS /////
         Expanded(
           child: ListView.separated(
             itemCount: this._folderIds.length +
@@ -213,7 +207,7 @@ class _ExplorerState extends State<Explorer> {
 
               // DECKS
               else
-                return FlashcardSet(
+                return Deck(
                   currentDeckId: this._deckIds[index - 1 - lastFolderIndex],
                 );
             },

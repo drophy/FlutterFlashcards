@@ -4,9 +4,9 @@ import 'package:mindspace/models/deck_object.dart';
 import 'package:mindspace/definitions/colors.dart';
 import 'package:mindspace/definitions/dummydata.dart';
 
-class FlashcardSet extends StatelessWidget {
+class Deck extends StatelessWidget {
   final int currentDeckId;
-  FlashcardSet({Key key, @required this.currentDeckId}) : super(key: key);
+  Deck({Key key, @required this.currentDeckId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class FlashcardSet extends StatelessWidget {
     return Container(
       height: 12 * vh,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.symmetric(horizontal: 4 * vw),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -25,12 +25,16 @@ class FlashcardSet extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  '${_currentDeck.name}',
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle1
-                      .copyWith(color: tailwindGray100),
+                Expanded(
+                  child: Text(
+                    '${_currentDeck.name}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle1
+                        .copyWith(color: tailwindGray100),
+                  ),
                 ),
                 // TODO: add Actions (Start Studying, Edit Cards, View All Cards, Move Up, Move Down, Share, Delete)
                 Icon(

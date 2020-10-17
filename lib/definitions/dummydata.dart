@@ -6,10 +6,10 @@ int nextDeckId = 0;
 
 Map<int, FolderObject> idFolderMap = {
   nextFolderId: FolderObject(id: nextFolderId++, name: 'drophy', parentName: 'Mindspace'), // root folder
-  nextFolderId: FolderObject(id: nextFolderId++, name: '4-Japanese 1', parentName: 'drophy'),
-  nextFolderId: FolderObject(id: nextFolderId++, name: '5-Japanese 2', parentName: 'drophy'),
-  nextFolderId: FolderObject(id: nextFolderId++, name: '[CV] Lesson 1', parentName: '5-Japanese 2'),
-  nextFolderId: FolderObject(id: nextFolderId++, name: '[CV] Lesson 2', parentName: '5-Japanese 2'),
+  nextFolderId: FolderObject(id: nextFolderId++, name: 'Japanese 1', parentName: 'drophy'),
+  nextFolderId: FolderObject(id: nextFolderId++, name: 'Japanese 2', parentName: 'drophy'),
+  nextFolderId: FolderObject(id: nextFolderId++, name: '[Anime] Shield Hero', parentName: 'Japanese 2'),
+  nextFolderId: FolderObject(id: nextFolderId++, name: '[Anime] Sword Art Online 4: WotU', parentName: 'Japanese 2'),
 };
 Map<int, DeckObject> idDeckMap = {
   nextDeckId: DeckObject(id: nextDeckId++, name: '[CV] Lesson 1'),

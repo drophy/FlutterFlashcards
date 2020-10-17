@@ -17,6 +17,7 @@ class Folder extends StatelessWidget {
     final double vw = MediaQuery.of(context).size.width / 100;
 
     return FlatButton(
+      padding: EdgeInsets.symmetric(horizontal: 4*vw),
       onPressed: () {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) =>
@@ -29,55 +30,45 @@ class Folder extends StatelessWidget {
           children: [
             // FOLDER NAME
             Expanded(
-              flex: 85,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 4 * vh),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.folder,
-                      color: tailwindGray100,
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.folder,
+                    color: tailwindGray100,
+                  ),
+                  SizedBox(width: 4 * vw),
+                  Expanded(
+                    child: Text(
+                      _currentFolder.name,
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle1
+                          .copyWith(color: tailwindGray100),
+                      softWrap: true,
+                      maxLines: 2,
+                      overflow: TextOverflow.fade,
                     ),
-                    SizedBox(width: 4 * vw),
-                    Expanded(
-                      child: Text(
-                        _currentFolder.name,
-                        style: Theme.of(context)
-                            .textTheme
-                            .subtitle1
-                            .copyWith(color: tailwindGray100),
-                        softWrap: true,
-                        maxLines: 2,
-                        overflow: TextOverflow.fade,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
             // MORE OPTIONS
-            Expanded(
-              flex: 15,
-              child: Center(
-                // TODO: Add actions (rename, add image, copy, delete, share, move up, move down #oof)
-                child: PopupMenuButton(
-                  child: Icon(
-                    Icons.more_vert,
-                    color: tailwindGray100,
-                  ),
-                  itemBuilder: (context) => [
-                    PopupMenuItem(child: Text('Rename'), value: 'rename'),
-                    PopupMenuItem(child: Text('Add image'), value: 'image'),
-                  ],
-                  onSelected: (result) {
-                    if (result == 'rename') {
-                      // TODO: not sure if we should implement these here or have the parent give us a function
-                      // _currentFolder.name = 'Hello';
-                      return;
-                    }
-                  },
-                ),
+            PopupMenuButton(
+              child: Icon(
+                Icons.more_vert,
+                color: tailwindGray100,
               ),
+              itemBuilder: (context) => [
+                PopupMenuItem(child: Text('Rename'), value: 'rename'),
+                PopupMenuItem(child: Text('Add image'), value: 'image'),
+              ],
+              onSelected: (result) {
+                if (result == 'rename') {
+                  // TODO: not sure if we should implement these here or have the parent give us a function
+                  // _currentFolder.name = 'Hello';
+                  return;
+                }
+              },
             )
           ],
         ),
