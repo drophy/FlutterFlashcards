@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mindspace/editor/editor.dart';
 
 import 'package:mindspace/models/deck_object.dart';
 import 'package:mindspace/definitions/colors.dart';
@@ -37,9 +38,24 @@ class Deck extends StatelessWidget {
                   ),
                 ),
                 // TODO: add Actions (Start Studying, Edit Cards, View All Cards, Move Up, Move Down, Share, Delete)
-                Icon(
-                  Icons.more_vert,
-                  color: tailwindGray100,
+                PopupMenuButton(
+                  child: Icon(
+                    Icons.more_vert,
+                    color: tailwindGray100,
+                  ),
+                  itemBuilder: (context) => [
+                    PopupMenuItem(child: Text('Study'), value: 'study'),
+                    PopupMenuItem(child: Text('Edit Cards'), value: 'edit'),
+                  ],
+                  onSelected: (result) {
+                    if (result == 'edit') {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => Editor(),
+                        ),
+                      );
+                    }
+                  },
                 ),
               ],
             ),

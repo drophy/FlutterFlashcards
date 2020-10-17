@@ -5,6 +5,7 @@ import 'package:mindspace/definitions/dummydata.dart';
 import 'package:mindspace/explorer/folder.dart';
 import 'package:mindspace/explorer/deck.dart';
 import 'package:mindspace/models/folder_object.dart';
+import 'package:mindspace/models/deck_object.dart';
 
 class Explorer extends StatefulWidget {
   final int currentFolderId;
@@ -46,19 +47,18 @@ class _ExplorerState extends State<Explorer> {
           PopupMenuButton(
             child: Icon(Icons.add),
             itemBuilder: (BuildContext context) => [
-              PopupMenuItem(child: Text('Folder'), value: 'folder'),
-              PopupMenuItem(child: Text('Flashcard Set'), value: 'cardset'),
+              PopupMenuItem(child: Text('Folder'), value: 'Folder'),
+              PopupMenuItem(child: Text('Card Deck'), value: 'Deck'),
             ],
             onSelected: (result) {
-              print(result);
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: Text('Folder name:'),
+                  title: Text('$result name:'),
                   content: TextField(
                       controller: _createNameController,
                       decoration: InputDecoration(
-                        // labelText: 'New Folder',
+                        labelText: 'Name',
                         filled: true,
                       )),
                   actions: [
@@ -70,18 +70,28 @@ class _ExplorerState extends State<Explorer> {
                       child: Text('CREATE'),
                       onPressed: () {
                         setState(() {
-                          // TODO: Handle Flashcard Set Creation too
+                          if (result == 'Folder') {
+                            // Add new FolderObject to map
+                            int newFolderId = nextFolderId++;
+                            idFolderMap[newFolderId] = new FolderObject(
+                              id: newFolderId,
+                              name: _createNameController.text,
+                              parentName: this._currentFolder.name,
+                            );
 
-                          // Add new FolderObject to map
-                          int newFolderId = nextFolderId++;
-                          idFolderMap[newFolderId] = new FolderObject(
-                            id: newFolderId,
-                            name: _createNameController.text,
-                            parentName: this._currentFolder.name,
-                          );
+                            // Add it to the current folder's folders array
+                            this._currentFolder.addFolder(newFolderId);
+                          } else {
+                            // Add new DeckObject to map
+                            int newDeckId = nextDeckId++;
+                            idDeckMap[newDeckId] = new DeckObject(
+                              id: newDeckId,
+                              name: _createNameController.text,
+                            );
 
-                          // Add it to the current folder's folders array
-                          this._currentFolder.addFolder(newFolderId);
+                            // Add it to the current folder's folders array
+                            this._currentFolder.addDeck(newDeckId);
+                          }
                         });
                         Navigator.of(context).pop(); // close pop up
                       },
