@@ -47,7 +47,7 @@ class Folder extends StatelessWidget {
                             .subtitle1
                             .copyWith(color: tailwindGray100),
                         softWrap: true,
-                        maxLines: 3,
+                        maxLines: 2,
                         overflow: TextOverflow.fade,
                       ),
                     ),
@@ -71,7 +71,9 @@ class Folder extends StatelessWidget {
                   ],
                   onSelected: (result) {
                     if (result == 'rename') {
-                      _currentFolder.name = 'Hello';
+                      // TODO: not sure if we should implement these here or have the parent give us a function
+                      // _currentFolder.name = 'Hello';
+                      return;
                     }
                   },
                 ),

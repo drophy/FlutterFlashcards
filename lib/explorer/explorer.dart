@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:mindspace/definitions/colors.dart';
 import 'package:mindspace/definitions/dummydata.dart';
 import 'package:mindspace/explorer/folder.dart';
+import 'package:mindspace/explorer/flashcard_set.dart';
 import 'package:mindspace/models/folder_object.dart';
 
 class Explorer extends StatefulWidget {
@@ -16,9 +17,11 @@ class Explorer extends StatefulWidget {
 class _ExplorerState extends State<Explorer> {
   FolderObject _currentFolder;
   List<int> _folderIds;
+  List<int> _deckIds;
   _ExplorerState(int currentFolderId) {
     this._currentFolder = idFolderMap[currentFolderId];
     this._folderIds = this._currentFolder.folders;
+    this._deckIds = this._currentFolder.decks;
   }
 
   // TODO: delete folderNames
@@ -189,16 +192,30 @@ class _ExplorerState extends State<Explorer> {
         Expanded(
           child: ListView.separated(
             itemCount: this._folderIds.length +
+                this._deckIds.length +
                 2, // we'll add empty elements at beginning and end to add extra separators
             // idea from https://codewithandrea.com/tips/2020-01-12-list-view-separated-top-bottom/
             itemBuilder: (context, index) {
-              if (index == 0 || index == this._folderIds.length + 1) {
+              int lastFolderIndex = this._folderIds.length;
+
+              // SIZED BOXES
+              if (index == 0 ||
+                  index == lastFolderIndex + this._deckIds.length + 1) {
                 return SizedBox(); // zero height: not visible
               }
 
-              return Folder(
-                  currentFolderId: this._folderIds[index -
-                      1]); // index-1 since i=0 is being used for a SizedBox
+              // FOLDERS
+              else if (index <= lastFolderIndex) {
+                return Folder(
+                  currentFolderId: this._folderIds[index - 1],
+                ); // index-1 since i=0 is being used for a SizedBox
+              }
+
+              // DECKS
+              else
+                return FlashcardSet(
+                  currentDeckId: this._deckIds[index - 1 - lastFolderIndex],
+                );
             },
             separatorBuilder: (context, index) => const Divider(),
           ),

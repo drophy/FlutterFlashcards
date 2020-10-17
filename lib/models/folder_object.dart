@@ -7,7 +7,7 @@ class FolderObject {
   String _parentName;
   // Image image;
   List<int> _folders = [];
-  List<int> _cardSets = [];
+  List<int> _decks = [];
 
   // CONSTRUCTOR
   FolderObject({
@@ -24,12 +24,16 @@ class FolderObject {
   String get name => this._name;
   String get parentName => this._parentName;
   List<int> get folders => this._folders;
-  List<int> get cardSets => this._cardSets;
+  List<int> get decks => this._decks;
 
   set name(String name) => this._name = name;
 
   // METHODS
   void addFolder(int folderId) {
     this._folders.add(folderId);
+  }
+
+  void addDeck(int deckId) {
+    this._decks.add(deckId);
   }
 }
