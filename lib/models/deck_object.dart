@@ -93,6 +93,7 @@ class DeckObject {
   }
 
   void removeCard(int index) {
+    if(index >= this._cards.length || index < 0) return;
     this._cards.removeAt(index);
   }
 

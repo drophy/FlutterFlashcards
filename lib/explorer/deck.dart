@@ -6,15 +6,30 @@ import 'package:mindspace/definitions/colors.dart';
 import 'package:mindspace/definitions/dummydata.dart';
 import 'package:mindspace/study_view/study_view.dart';
 
-class Deck extends StatelessWidget {
+class Deck extends StatefulWidget {
   final int currentDeckId;
   Deck({Key key, @required this.currentDeckId}) : super(key: key);
+
+  @override
+  _DeckState createState() => _DeckState();
+}
+
+class _DeckState extends State<Deck> {
+  final _newNameController = TextEditingController();
+  DeckObject _currentDeck;
+  
+  @override
+  void initState() {
+    super.initState();
+    _currentDeck = idDeckMap[widget.currentDeckId];
+    _newNameController.text = _currentDeck.name;
+  }
 
   @override
   Widget build(BuildContext context) {
     final double vh = MediaQuery.of(context).size.height / 100;
     final double vw = MediaQuery.of(context).size.width / 100;
-    DeckObject _currentDeck = idDeckMap[currentDeckId];
+    
 
     return Container(
       height: 12 * vh,
@@ -47,7 +62,9 @@ class Deck extends StatelessWidget {
                   itemBuilder: (context) => [
                     PopupMenuItem(child: Text('Study'), value: 'study'),
                     PopupMenuItem(child: Text('Edit Cards'), value: 'edit'),
-                    PopupMenuItem(child: Text('Reset Progress'), value: 'reset'),
+                    PopupMenuItem(child: Text('Rename Deck'), value: 'rename'),
+                    PopupMenuItem(
+                        child: Text('Reset Progress'), value: 'reset'),
                   ],
                   onSelected: (result) {
                     if (result == 'edit' || result == 'study') {
@@ -55,13 +72,15 @@ class Deck extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) {
                             return result == 'edit'
-                                ? DeckOverview(deckId: currentDeckId)
+                                ? DeckOverview(deckId: widget.currentDeckId)
                                 : StudyView(deck: _currentDeck);
                           },
                         ),
                       );
                     } else if (result == 'reset') {
                       _currentDeck.resetProgress();
+                    } else if (result == 'rename') {
+                      _renameDeck(context);
                     }
                   },
                 ),
@@ -93,6 +112,36 @@ class Deck extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _renameDeck(context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Deck name:'),
+        content: TextField(
+            controller: _newNameController,
+            decoration: InputDecoration(
+              labelText: 'Name',
+              filled: true,
+            )),
+        actions: [
+          FlatButton(
+            child: Text('CANCEL'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          RaisedButton(
+            child: Text('RENAME'),
+            onPressed: () {
+              setState(() {
+                _currentDeck.name = _newNameController.text;
+              });
+              Navigator.of(context).pop(); // close pop up
+            },
+          )
+        ],
       ),
     );
   }
