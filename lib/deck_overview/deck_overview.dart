@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:mindspace/definitions/colors.dart';
 import 'package:mindspace/definitions/dummydata.dart';
@@ -27,6 +28,9 @@ class _DeckOverviewState extends State<DeckOverview> {
 
   @override
   Widget build(BuildContext context) {
+    final double vh = MediaQuery.of(context).size.height / 100;
+    final double vw = MediaQuery.of(context).size.width / 100;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Deck overview'),
@@ -38,7 +42,8 @@ class _DeckOverviewState extends State<DeckOverview> {
               deck.addCard();
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => Editor(deck: deck, initialIndex: deck.cards.length-1),
+                  builder: (context) =>
+                      Editor(deck: deck, initialIndex: deck.cards.length - 1),
                 ),
               );
             },
@@ -46,30 +51,55 @@ class _DeckOverviewState extends State<DeckOverview> {
         ],
       ),
       backgroundColor: tailwindGray700,
-      body: Column(
-        children: [
-          // TODO: try and align the hintText with the icon (baseline?) and maybe with the appBar's text, not sure
-          TextField(
-            onSubmitted: _filterCards,
-            decoration: InputDecoration(
-              hintText: 'Search',
-              prefixIcon: Icon(Icons.search),
-              filled: true,
-              fillColor: Colors.white,
+      body: Stack(children: [
+        Column(
+          children: [
+            // TODO: try and align the hintText with the icon (baseline?) and maybe with the appBar's text, not sure
+            TextField(
+              onSubmitted: _filterCards,
+              decoration: InputDecoration(
+                hintText: 'Search',
+                prefixIcon: Icon(Icons.search),
+                filled: true,
+                fillColor: Colors.white,
+              ),
             ),
-          ),
-          Expanded(
-            child: ListView.separated(
-              itemCount: filteredCardIndexes.length + 1,
-              itemBuilder: (context, index) {
-                if (index == filteredCardIndexes.length) return SizedBox();
-                return OverviewItem(deck: deck, cardIndex: filteredCardIndexes[index],);
-              },
-              separatorBuilder: (context, index) => Divider(),
+            Expanded(
+              child: ListView.separated(
+                itemCount: filteredCardIndexes.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == filteredCardIndexes.length) return SizedBox();
+                  return OverviewItem(
+                    deck: deck,
+                    cardIndex: filteredCardIndexes[index],
+                  );
+                },
+                separatorBuilder: (context, index) => Divider(),
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+        // The idea was to have checkboxes on each and delete them from here, but it's on top of the last element
+        // and I'm sure it will be much more impractical than just adding delete buttons instead of checkboxes
+        // Positioned(
+        //   bottom: 0,
+        //   child: Container(
+        //     padding: EdgeInsets.symmetric(vertical: 3*vh, horizontal: 8*vw),
+        //     width: 100*vw,
+        //     height: 100,
+        //     child: Container(
+        //       decoration: BoxDecoration(
+        //         color: tailwindGray100,
+        //         borderRadius: BorderRadius.circular(8),
+        //         boxShadow: [BoxShadow(
+        //           blurRadius: 2,
+        //           spreadRadius: 0.5,
+        //         )],
+        //       ),
+        //     ),
+        //   ),
+        // )
+      ]),
     );
   }
 
@@ -89,21 +119,4 @@ class _DeckOverviewState extends State<DeckOverview> {
     });
     print(filteredCardIndexes);
   }
-
-  // void _filterCards(String input) {
-  //   print('FILTERING CARDS');
-  //   print('INPUT IS $input');
-  //   if (input == '')
-  //     filteredCardIndexes = deck.cards;
-  //   else {
-  //     filteredCardIndexes = deck.cards.where((card) {
-  //       String inputLC = input.toLowerCase();
-  //       return card.question.toLowerCase().contains(inputLC) ||
-  //           card.answer.toLowerCase().contains(inputLC);
-  //     }).toList();
-  //   }
-  //   print('FOUND ${filteredCardIndexes.length} CARDS');
-
-  //   setState(() {});
-  // }
 }

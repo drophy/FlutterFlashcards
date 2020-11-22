@@ -1,6 +1,7 @@
 class CardObject {
   String question;
   String answer;
+  bool selected = false;
   int _group;
 
   CardObject({this.question = '', this.answer = '', group = 0}) {

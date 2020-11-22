@@ -15,7 +15,6 @@ class OverviewItem extends StatefulWidget {
 }
 
 class _OverviewItemState extends State<OverviewItem> {
-  bool selected = false;
   CardObject card;
 
   @override
@@ -43,18 +42,27 @@ class _OverviewItemState extends State<OverviewItem> {
                 flex: 2,
                 child: Container(color: groupColors[card.group]),
               ),
-              // CHECKBOX
+              // TRASHCAN BUTTON
               Expanded(
-                flex: 14,
-                child: Checkbox(
-                  value: this.selected,
-                  onChanged: (bool newValue) {
-                    setState(() {
-                      this.selected = newValue;
-                    });
-                  },
-                ),
-              ),
+                  flex: 14,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.delete,
+                      color: warningColor,
+                    ),
+                    onPressed: () {
+                      widget.deck.removeCard(widget.cardIndex);
+                    },
+                  )
+                  // child: Checkbox(
+                  //   value: card.selected,
+                  //   onChanged: (bool newValue) {
+                  //     setState(() {
+                  //       card.selected = newValue;
+                  //     });
+                  //   },
+                  // ),
+                  ),
               Container(
                 width: 1,
                 color: tailwindGray500,

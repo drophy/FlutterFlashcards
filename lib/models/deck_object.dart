@@ -88,8 +88,12 @@ class DeckObject {
   // }
 
   // METHODS
-  void addCard({question = '', answer = ''}) {
+  void addCard({String question = '', String answer = ''}) {
     this._cards.add(CardObject(question: question, answer: answer, group: 0));
+  }
+
+  void removeCard(int index) {
+    this._cards.removeAt(index);
   }
 
   void changeGroup(int cardIndex, int newGroup) {

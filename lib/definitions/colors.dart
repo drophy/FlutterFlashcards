@@ -16,3 +16,4 @@ List<Color> groupColors = [
 
 Color progressColor1 = Colors.tealAccent;
 Color interactColor = Colors.teal[100];
+Color warningColor = Colors.red[300];
