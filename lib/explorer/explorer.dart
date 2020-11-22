@@ -175,7 +175,7 @@ class _ExplorerState extends State<Explorer> {
                         minHeight: 1 * vh,
                         backgroundColor: tailwindGray100,
                         valueColor:
-                            AlwaysStoppedAnimation<Color>(Colors.green[200]),
+                            AlwaysStoppedAnimation<Color>(progressColor1),
                       ),
                     ),
                     SizedBox(height: 1 * vh),

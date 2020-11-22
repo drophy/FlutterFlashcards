@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mindspace/editor/editor.dart';
+import 'package:mindspace/deck_overview/deck_overview.dart';
 
 import 'package:mindspace/models/deck_object.dart';
 import 'package:mindspace/definitions/colors.dart';
@@ -51,7 +51,7 @@ class Deck extends StatelessWidget {
                     if (result == 'edit') {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => Editor(),
+                          builder: (context) => DeckOverview(deckId: currentDeckId),
                         ),
                       );
                     }
@@ -69,7 +69,7 @@ class Deck extends StatelessWidget {
                       value: _currentDeck.progress,
                       minHeight: 1 * vh,
                       backgroundColor: tailwindGray100,
-                      valueColor: AlwaysStoppedAnimation(Colors.green[200]),
+                      valueColor: AlwaysStoppedAnimation(progressColor1),
                     ),
                   ),
                 ),

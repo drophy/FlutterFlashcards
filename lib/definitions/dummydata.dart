@@ -18,11 +18,21 @@ Map<int, DeckObject> idDeckMap = {
 
 void initDummyData() {
   // Give cards to decks
-  idDeckMap[0].addCard(cardId: 0); 
-  idDeckMap[0].addCard(cardId: 1);
-  idDeckMap[0].addCard(cardId: 2);
-  idDeckMap[0].addCard(cardId: 3);
-  idDeckMap[0].addCard(cardId: 4, group: 5); // add 1 to the 100% mastery group
+  idDeckMap[0].addCard(question: 'sea; ocean; waters​', answer: 'うみ (海)'); 
+  idDeckMap[0].addCard(question: 'stamp (postage)', answer: 'きって (切手)');
+  idDeckMap[0].addCard(question: 'tickets (entradas)', answer: 'きっぷ');
+  idDeckMap[0].addCard(question: 'surfing', answer: 'サーフィン');
+  idDeckMap[0].addCard(question: 'homework', answer: 'しゅくだい (宿題)'); 
+  idDeckMap[0].addCard(question: 'food', answer: 'たべもの (食べ物) - The last kanji means "thing/stuff" so literally it\'s like "something to eat" lol'); 
+  idDeckMap[0].addCard(question: 'drink; beverage​', answer: 'のみもの (飲み物) - Same ending as たべもの, so it\'s like "thing to drink"'); 
+  idDeckMap[0].addCard(question: 'birthday', answer: 'たんじょうび (誕生日)'); 
+  idDeckMap[0].addCard(question: 'exam', answer: 'テスト or しけん (試験)'); 
+  idDeckMap[0].addCard(question: 'clima', answer: 'てんき (天気)');
+  idDeckMap[0].changeGroup(1, 1); // to see the different colors
+  idDeckMap[0].changeGroup(2, 2); 
+  idDeckMap[0].changeGroup(3, 3); 
+  idDeckMap[0].changeGroup(4, 4); 
+  idDeckMap[0].changeGroup(5, 5); 
 
   // Give folders to folders
   idFolderMap[0].addFolder(1);
