@@ -4,6 +4,7 @@ import 'package:mindspace/deck_overview/deck_overview.dart';
 import 'package:mindspace/models/deck_object.dart';
 import 'package:mindspace/definitions/colors.dart';
 import 'package:mindspace/definitions/dummydata.dart';
+import 'package:mindspace/study_view/study_view.dart';
 
 class Deck extends StatelessWidget {
   final int currentDeckId;
@@ -46,14 +47,21 @@ class Deck extends StatelessWidget {
                   itemBuilder: (context) => [
                     PopupMenuItem(child: Text('Study'), value: 'study'),
                     PopupMenuItem(child: Text('Edit Cards'), value: 'edit'),
+                    PopupMenuItem(child: Text('Reset Progress'), value: 'reset'),
                   ],
                   onSelected: (result) {
-                    if (result == 'edit') {
+                    if (result == 'edit' || result == 'study') {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => DeckOverview(deckId: currentDeckId),
+                          builder: (context) {
+                            return result == 'edit'
+                                ? DeckOverview(deckId: currentDeckId)
+                                : StudyView(deck: _currentDeck);
+                          },
                         ),
                       );
+                    } else if (result == 'reset') {
+                      _currentDeck.resetProgress();
                     }
                   },
                 ),

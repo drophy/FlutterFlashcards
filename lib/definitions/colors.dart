@@ -5,13 +5,14 @@ const tailwindGray500 = Color(0xFFA0AEC0); // used for separators
 const tailwindGray700 = Color(0xFF4A5568); // used for most backgrounds
 const tailwindGray900 = Color(0xFF1A202C); // our black
 
-const List<Color> groupColors = [
+List<Color> groupColors = [
   tailwindGray500,
   Colors.purple,
   Colors.orange,
-  Colors.yellow,
+  Colors.yellow[600],
   Colors.green,
   Colors.blue,
 ];
 
-const progressColor1 = Colors.tealAccent;
+Color progressColor1 = Colors.tealAccent;
+Color interactColor = Colors.teal[100];

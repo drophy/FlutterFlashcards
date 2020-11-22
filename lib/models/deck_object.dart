@@ -1,3 +1,6 @@
+import 'dart:collection';
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:mindspace/models/card_object.dart';
 
@@ -6,16 +9,25 @@ class DeckObject {
   String _name;
   List<CardObject> _cards = [];
 
-  //! We might just want to have them separated by groups when studying
-  List<List<CardObject>> _cardLists = [
-    [], // 0 - unseenGroup
-    [], // 1 - group1
-    [], // 2
-    [], // 3
-    [], // 4
-    [], // 5
-  ];
+  // //! We might just want to have them separated by groups when studying
+  // List<List<CardObject>> _cardLists = [
+  //   [], // 0 - unseenGroup
+  //   [], // 1 - group1
+  //   [], // 2
+  //   [], // 3
+  //   [], // 4
+  //   [], // 5
+  // ];
 
+  CardObject _currentCard; // card that's currently being shown in studying mode
+  List<Queue<CardObject>> _cardQueues = [
+    Queue(), // 0 - unseenGroup
+    Queue(), // 1 - group1
+    Queue(), // 2
+    Queue(), // 3
+    Queue(), // 4
+    Queue(), // 5
+  ];
 
   // CONSTRUCTOR
   DeckObject({
@@ -82,6 +94,56 @@ class DeckObject {
 
   void changeGroup(int cardIndex, int newGroup) {
     this._cards[cardIndex].group = newGroup;
+  }
+
+  void shuffle() {
+    // Make a copy of card list
+    List<CardObject> aidingList = [];
+    this._cards.forEach((card) { 
+      aidingList.add(card);
+    });
+
+    // Clear queues
+    _cardQueues.forEach((queue) => queue.clear());
+
+    // Draw cards at random and put them in their queue
+    final _random = new Random();
+
+    while(aidingList.isNotEmpty) {
+      int index = _random.nextInt(aidingList.length);
+      CardObject card = aidingList.removeAt(index);
+      _cardQueues[card.group].add(card);
+    }
+  }
+
+  // Picks a card from one of the queues, sets it as the currentCard and returns it
+  CardObject nextCard() {
+    if(cardQuantity == 0) return null;
+
+    // Generate an array with 1 fives, 2 fours, 3 threes, 4 twos, 5 ones and 6 zeros (if all queues exist)
+    List<int> aidingList = [];
+    for(int group = 0, quantity = 6; group <= 5; group++, quantity--) {
+      if(_cardQueues[group].isEmpty) continue; // if a queue is empty, no point in considering it
+      for(int q = quantity; q > 0; q--) aidingList.add(group);
+    }
+
+    // Select one of the non empty queues at 'random' (but giving preference to the ones from lower groups)
+    final _random = new Random();
+    int selectedGroup = aidingList[_random.nextInt(aidingList.length)];
+    print('SELECTED GROUP $selectedGroup');
+
+    // Extract a card from that queue, set as current card and return it
+    return _currentCard = _cardQueues[selectedGroup].removeFirst();
+  }
+
+  // Changes the group of the currentCard and puts it into a queue accordingly
+  void recolorCard({int group}) {
+    this._currentCard.group = group;
+    _cardQueues[group].add(this._currentCard);
+  }
+
+  void resetProgress() {
+    this._cards.forEach((card) => card.group = 0);
   }
 
   // PRIVATE METHODS
