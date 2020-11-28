@@ -135,13 +135,14 @@ class DeckObject {
     // Select one of the non empty queues at 'random' (but giving preference to the ones from lower groups)
     final _random = new Random();
     int selectedGroup = aidingList[_random.nextInt(aidingList.length)];
-    print('SELECTED GROUP $selectedGroup');
 
     // Extract a card from that queue, set as current card and return it
     return _currentCard = _cardQueues[selectedGroup].removeFirst();
   }
 
   // Changes the group of the currentCard and puts it into a queue accordingly
+  // TODO: add card to a waiting queue so it can't appear multiple times in a row
+  // TODO pt2: the queue could have a max size of 5 or so, but make it smaller or don't use it if there's just a couple cards
   void recolorCard({int group}) {
     this._currentCard.group = group;
     _cardQueues[group].add(this._currentCard);

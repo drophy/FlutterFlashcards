@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mindspace/definitions/colors.dart';
+import 'package:mindspace/explorer/bloc/explorer_bloc.dart';
 import 'package:mindspace/models/card_object.dart';
 import 'package:mindspace/models/deck_object.dart';
 
@@ -24,6 +26,7 @@ class _StudyViewState extends State<StudyView> {
 
   @override
   Widget build(BuildContext context) {
+    final ExplorerBloc _bloc = BlocProvider.of<ExplorerBloc>(context);
     final double vh = MediaQuery.of(context).size.height / 100;
     final double vw = MediaQuery.of(context).size.width / 100;
 
@@ -32,6 +35,11 @@ class _StudyViewState extends State<StudyView> {
         appBar: AppBar(
           title: Text(widget.deck.name),
           backgroundColor: tailwindGray900,
+          leading: BackButton(onPressed: () {
+            print('IT WORKED 3');
+            _bloc.add(UpdateEvent());
+            Navigator.maybePop(context);
+          }),
         ),
         backgroundColor: tailwindGray700,
         body: Padding(
@@ -94,7 +102,6 @@ class _StudyViewState extends State<StudyView> {
         ),
         color: interactColor,
         onPressed: () {
-          print('REVEALING!');
           setState(() {
             showingQuestion = false;
           });

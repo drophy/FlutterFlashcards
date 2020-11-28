@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mindspace/definitions/colors.dart';
+import 'package:mindspace/explorer/bloc/explorer_bloc.dart';
 import 'package:mindspace/models/card_object.dart';
 import 'package:mindspace/models/deck_object.dart';
 
@@ -19,6 +21,12 @@ class _EditorState extends State<Editor> {
   TextEditingController _questionInputController;
   TextEditingController _answerInputController;
 
+  // // CONTINUE . it says the context doesn't contain a Bloc/Cubit of such type
+  // void updateAncestors(){
+  //   return;
+  //   BlocProvider.of<ExplorerBloc>(context).add(UpdateEvent());
+  // }
+
   @override
   void initState() {
     super.initState();
@@ -35,11 +43,18 @@ class _EditorState extends State<Editor> {
   Widget build(BuildContext context) {
     final double vh = MediaQuery.of(context).size.height / 100;
     final double vw = MediaQuery.of(context).size.width / 100;
+    final ExplorerBloc _bloc = BlocProvider.of<ExplorerBloc>(context);
 
     return Scaffold(
       backgroundColor: tailwindGray700,
       ///// APP BAR /////
       appBar: AppBar(
+        leading: BackButton(onPressed: () {
+          print('IT WORKED 3');
+          _bloc.add(UpdateEvent());
+          Navigator.maybePop(
+              context); // not sure of how it's different to pop(), but it says 'leading' uses this by default
+        }),
         backgroundColor: tailwindGray900,
         title: Text('Editor'),
         actions: [
@@ -86,7 +101,7 @@ class _EditorState extends State<Editor> {
                 onPressed: () {
                   widget.deck.addCard();
                   setState(() {
-                    currentIndex = widget.deck.cardQuantity-1;
+                    currentIndex = widget.deck.cardQuantity - 1;
                   });
                   _updateCardText();
                 },

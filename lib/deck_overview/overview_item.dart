@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mindspace/definitions/colors.dart';
 import 'package:mindspace/editor/editor.dart';
+import 'package:mindspace/explorer/bloc/explorer_bloc.dart';
 import 'package:mindspace/models/card_object.dart';
 import 'package:mindspace/models/deck_object.dart';
 
@@ -19,6 +21,7 @@ class _OverviewItemState extends State<OverviewItem> {
 
   @override
   Widget build(BuildContext context) {
+    final ExplorerBloc _bloc = BlocProvider.of<ExplorerBloc>(context);
     card = widget.deck.cards[widget.cardIndex];
     final double vh = MediaQuery.of(context).size.height / 100;
     final double vw = MediaQuery.of(context).size.width / 100;
@@ -52,6 +55,7 @@ class _OverviewItemState extends State<OverviewItem> {
                     ),
                     onPressed: () {
                       widget.deck.removeCard(widget.cardIndex);
+                      _bloc.add(UpdateEvent());
                     },
                   )
                   // child: Checkbox(

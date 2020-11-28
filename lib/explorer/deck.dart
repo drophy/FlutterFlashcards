@@ -29,7 +29,6 @@ class _DeckState extends State<Deck> {
   Widget build(BuildContext context) {
     final double vh = MediaQuery.of(context).size.height / 100;
     final double vw = MediaQuery.of(context).size.width / 100;
-    
 
     return Container(
       height: 12 * vh,
@@ -53,7 +52,7 @@ class _DeckState extends State<Deck> {
                         .copyWith(color: tailwindGray100),
                   ),
                 ),
-                // TODO: add Actions (Start Studying, Edit Cards, View All Cards, Move Up, Move Down, Share, Delete)
+                // TODO: add Actions (Delete, Move Up, Move Down, Share, Copy to Clipboard)
                 PopupMenuButton(
                   child: Icon(
                     Icons.more_vert,
@@ -67,19 +66,31 @@ class _DeckState extends State<Deck> {
                         child: Text('Reset Progress'), value: 'reset'),
                   ],
                   onSelected: (result) {
-                    if (result == 'edit' || result == 'study') {
+                    // EDIT & STUDY
+                    if (result == 'study') {
+                      if(_currentDeck.cardQuantity == 0) {
+                        // TODO: show snackbar
+                        Scaffold.of(context).showSnackBar(_simpleSnackbar('Add some cards in "Edit Cards" to start studying!'));
+                        return;
+                      }
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) {
-                            return result == 'edit'
-                                ? DeckOverview(deckId: widget.currentDeckId)
-                                : StudyView(deck: _currentDeck);
-                          },
+                          builder: (context) => StudyView(deck: _currentDeck)
                         ),
                       );
-                    } else if (result == 'reset') {
+                    } else if (result == 'edit') {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => DeckOverview(deckId: widget.currentDeckId)
+                        ),
+                      );
+                    }
+                    // RESET
+                    else if (result == 'reset') {
                       _currentDeck.resetProgress();
-                    } else if (result == 'rename') {
+                    }
+                    // RENAME
+                    else if (result == 'rename') {
                       _renameDeck(context);
                     }
                   },
@@ -144,5 +155,9 @@ class _DeckState extends State<Deck> {
         ],
       ),
     );
+  }
+
+  _simpleSnackbar(String text) {
+    return SnackBar(content: Text(text));
   }
 }
