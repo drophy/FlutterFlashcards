@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mindspace/explorer/bloc/explorer_bloc.dart';
 
 import 'package:mindspace/explorer/explorer.dart';
 
@@ -6,26 +8,56 @@ import 'package:mindspace/models/folder_object.dart';
 import 'package:mindspace/definitions/colors.dart';
 import 'package:mindspace/definitions/dummydata.dart';
 
-class Folder extends StatelessWidget {
+class Folder extends StatefulWidget {
   final int currentFolderId;
   Folder({Key key, @required this.currentFolderId}) : super(key: key);
 
   @override
+  _FolderState createState() => _FolderState();
+}
+
+class _FolderState extends State<Folder> {
+  FolderObject _currentFolder;
+  final _newNameController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _currentFolder = idFolderMap[widget.currentFolderId];
+    _newNameController.text = _currentFolder.name;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    FolderObject _currentFolder = idFolderMap[this.currentFolderId];
     final double vh = MediaQuery.of(context).size.height / 100;
     final double vw = MediaQuery.of(context).size.width / 100;
 
     return FlatButton(
-      padding: EdgeInsets.symmetric(horizontal: 4*vw),
+      padding: EdgeInsets.zero,
       onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute(
+        Navigator.of(context).push(
+          MaterialPageRoute(
             builder: (context) =>
-                Explorer(currentFolderId: this.currentFolderId)));
+                Explorer(currentFolderId: this.widget.currentFolderId),
+          ),
+        ).then((value) {
+          if(value == 'pop again') {
+            print('ABOUT TO POP: ${_currentFolder.name}');
+            Navigator.of(context).pop('pop again');
+          }
+        });
       },
       child: Container(
         height: 12 * vh,
-        // color: Colors.amber[300],
+        padding: EdgeInsets.symmetric(horizontal: 4 * vw),
+        decoration: BoxDecoration(
+            image: DecorationImage(
+          // ty https://stackoverflow.com/questions/58427142/how-to-pass-image-asset-in-imageprovider-type
+          image: Image.asset('assets/images/fitoria.png').image,
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(
+              Color.fromRGBO(0, 0, 0, 0.5), BlendMode.luminosity),
+        )),
         child: Row(
           children: [
             // FOLDER NAME
@@ -64,9 +96,15 @@ class Folder extends StatelessWidget {
               ],
               onSelected: (result) {
                 if (result == 'rename') {
-                  // TODO: not sure if we should implement these here or have the parent give us a function
-                  // _currentFolder.name = 'Hello';
-                  return;
+                  setState(() {
+                    _renameFolder(context);
+                  });
+                } else if (result == 'image') {
+                  setState(() {
+                    // CONTINUE - make BLOC get and change the image
+                    BlocProvider.of<ExplorerBloc>(context)
+                        .add(PickImageEvent(_currentFolder));
+                  });
                 }
               },
             )
@@ -76,35 +114,33 @@ class Folder extends StatelessWidget {
     );
   }
 
-  // void _renameFolderHandler(BuildContext context, FolderObject folder) {
-  //   final _newNameController = TextEditingController();
-
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) => AlertDialog(
-  //       title: Text('Folder name:'),
-  //       content: TextField(
-  //           controller: _newNameController,
-  //           decoration: InputDecoration(
-  //             // labelText: 'New Folder',
-  //             filled: true,
-  //           )),
-  //       actions: [
-  //         FlatButton(
-  //           child: Text('CANCEL'),
-  //           onPressed: () => Navigator.of(context).pop(),
-  //         ),
-  //         RaisedButton(
-  //           child: Text('SAVE'),
-  //           onPressed: () {
-  //             setState(() {
-  //               folder.name = _newNameController.text;
-  //             });
-  //             Navigator.of(context).pop(); // close pop up
-  //           },
-  //         )
-  //       ],
-  //     ),
-  //   );
-  // }
+  void _renameFolder(context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Deck name:'),
+        content: TextField(
+            controller: _newNameController,
+            decoration: InputDecoration(
+              labelText: 'Name',
+              filled: true,
+            )),
+        actions: [
+          FlatButton(
+            child: Text('CANCEL'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          RaisedButton(
+            child: Text('RENAME'),
+            onPressed: () {
+              setState(() {
+                _currentFolder.name = _newNameController.text;
+              });
+              Navigator.of(context).pop(); // close pop up
+            },
+          )
+        ],
+      ),
+    );
+  }
 }

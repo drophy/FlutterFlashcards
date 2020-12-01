@@ -8,3 +8,12 @@ abstract class ExplorerEvent extends Equatable {
 }
 
 class UpdateEvent extends ExplorerEvent {}
+
+class PickImageEvent extends ExplorerEvent {
+  final FolderObject folder;
+
+  PickImageEvent(this.folder);
+
+  @override
+  List<Object> get props => [folder];
+}

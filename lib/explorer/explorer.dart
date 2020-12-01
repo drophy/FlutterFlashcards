@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mindspace/auth/user_auth_provider.dart';
 import 'package:mindspace/definitions/colors.dart';
 import 'package:mindspace/definitions/dummydata.dart';
+import 'package:mindspace/definitions/online.dart';
 import 'package:mindspace/explorer/bloc/explorer_bloc.dart';
 import 'package:mindspace/explorer/folder.dart';
 import 'package:mindspace/explorer/deck.dart';
@@ -35,6 +37,7 @@ class _ExplorerState extends State<Explorer> {
 
     return Scaffold(
       backgroundColor: tailwindGray700,
+      ///// APP BAR /////
       appBar: AppBar(
         backgroundColor: tailwindGray900,
         title: Text('${this._currentFolder.parentName}'),
@@ -108,24 +111,37 @@ class _ExplorerState extends State<Explorer> {
             icon: Icon(Icons.power_settings_new),
             onPressed: () {
               showDialog(
-                  context: context,
-                  builder: (_) {
-                    return AlertDialog(
-                        backgroundColor: tailwindGray100,
-                        title: Text('Sign out?'),
-                        actions: <Widget>[
-                          FlatButton(
-                            child: Text('No'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          FlatButton(
-                            child: Text('Yes'),
-                            onPressed: () {},
-                          ),
-                        ]);
-                  });
+                context: context,
+                builder: (_) {
+                  return AlertDialog(
+                    backgroundColor: tailwindGray100,
+                    title: Text('Sign out?'),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text('No'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      FlatButton(
+                        child: Text('Yes'),
+                        onPressed: () {
+                          // TODO: Log out and return to Login page
+                          globalGoogleSignIn.signOut();
+                          print('ABOUT TO POP DIALOG');
+                          Navigator.of(context).pop('pop again'); // close dialog
+                        },
+                      ),
+                    ],
+                  );
+                },
+              ).then((value) {
+                // TODO: we might not need this .then() after all
+                if (value == 'pop again') {
+                  print('ABOUT TO POP ${_currentFolder.name}');
+                  Navigator.of(context).pop('pop again'); // exit page
+                }
+              });
             },
           )
         ],
@@ -222,8 +238,7 @@ class _ExplorerState extends State<Explorer> {
                   // DECKS
                   else
                     return Deck(
-                      currentDeckId:
-                          this._deckIds[index - 1 - lastFolderIndex],
+                      currentDeckId: this._deckIds[index - 1 - lastFolderIndex],
                     );
                 },
                 separatorBuilder: (context, index) => const Divider(),

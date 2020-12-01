@@ -9,3 +9,6 @@ GeneratedPluginRegistrant.java
 # Remember to never publicly share your keystore.
 # See https://flutter.dev/docs/deployment/android#reference-the-keystore-from-the-app
 key.properties
+
+# drophy (think it's the other .gitignore that we should worry about, since that's our repo, but just in case)
+google-services.json

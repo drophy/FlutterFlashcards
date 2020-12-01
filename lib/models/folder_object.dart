@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart'; // it gave us '@required'
 // import 'package:flutter/material.dart'; // you'll need this to use 'Image' as a type, I think
 
@@ -5,7 +7,7 @@ class FolderObject {
   int _id; // wanted to make this one final, but couldn't figure out how while keeping it private
   String _name;
   String _parentName;
-  // Image image;
+  String base64image; // CONTINUE - support these
   List<int> _folders = [];
   List<int> _decks = [];
 

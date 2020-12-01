@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:mindspace/models/folder_object.dart';
 
 part 'explorer_event.dart';
 part 'explorer_state.dart';
@@ -19,6 +20,10 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       print('BLOC: UPDATE EVENT'); // DBUG 
       yield UpdateState(); // so it detects a change of state and rebuilds the UI
       yield ExplorerInitial(); // while actually staying on the same state
+    }
+    else if (event is PickImageEvent) {
+      event.folder.name = 'Some other name';
+      print(event.folder.name);
     }
   }
 }
