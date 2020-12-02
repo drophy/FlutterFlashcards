@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:mindspace/explorer/bloc/explorer_bloc.dart';
 
 import 'package:mindspace/explorer/explorer.dart';
@@ -19,11 +20,13 @@ class Folder extends StatefulWidget {
 class _FolderState extends State<Folder> {
   FolderObject _currentFolder;
   final _newNameController = TextEditingController();
+  Box _idFolderBox;
 
   @override
   void initState() {
     super.initState();
-    _currentFolder = idFolderMap[widget.currentFolderId];
+    _idFolderBox = Hive.box('idFolderBox');
+    _currentFolder = _idFolderBox.get(widget.currentFolderId);
     _newNameController.text = _currentFolder.name;
   }
 
@@ -135,6 +138,7 @@ class _FolderState extends State<Folder> {
             onPressed: () {
               setState(() {
                 _currentFolder.name = _newNameController.text;
+                _currentFolder.save();
               });
               Navigator.of(context).pop(); // close pop up
             },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:mindspace/deck_overview/deck_overview.dart';
 
 import 'package:mindspace/models/deck_object.dart';
@@ -17,11 +18,13 @@ class Deck extends StatefulWidget {
 class _DeckState extends State<Deck> {
   final _newNameController = TextEditingController();
   DeckObject _currentDeck;
+  Box _idDeckBox;
   
   @override
   void initState() {
     super.initState();
-    _currentDeck = idDeckMap[widget.currentDeckId];
+    _idDeckBox = Hive.box('idDeckBox');
+    _currentDeck = _idDeckBox.get(widget.currentDeckId);
     _newNameController.text = _currentDeck.name;
   }
 
@@ -87,7 +90,9 @@ class _DeckState extends State<Deck> {
                     }
                     // RESET
                     else if (result == 'reset') {
-                      _currentDeck.resetProgress();
+                      setState(() {
+                        _currentDeck.resetProgress();
+                      });
                     }
                     // RENAME
                     else if (result == 'rename') {
@@ -148,6 +153,7 @@ class _DeckState extends State<Deck> {
             onPressed: () {
               setState(() {
                 _currentDeck.name = _newNameController.text;
+                _currentDeck.save();
               });
               Navigator.of(context).pop(); // close pop up
             },

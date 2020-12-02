@@ -1,12 +1,19 @@
 import 'dart:collection';
 import 'dart:math';
-
 import 'package:flutter/foundation.dart';
+import 'package:hive/hive.dart';
 import 'package:mindspace/models/card_object.dart';
 
-class DeckObject {
+part 'deck_object.g.dart';
+
+@HiveType(typeId: 3, adapterName: 'DeckAdapter')
+
+class DeckObject extends HiveObject {
+  @HiveField(1)
   int _id; // wanted to make this one final, but couldn't figure out how while keeping it private
+  @HiveField(2)
   String _name;
+  @HiveField(3)
   List<CardObject> _cards = [];
 
   // //! We might just want to have them separated by groups when studying
@@ -19,7 +26,9 @@ class DeckObject {
   //   [], // 5
   // ];
 
+  @HiveField(4)
   CardObject _currentCard; // card that's currently being shown in studying mode
+  //@HiveField(5)
   List<Queue<CardObject>> _cardQueues = [
     Queue(), // 0 - unseenGroup
     Queue(), // 1 - group1
@@ -39,7 +48,9 @@ class DeckObject {
   }
 
   // GETTERS AND SETTERS
-  set name(String name) => this._name = name;
+  set name(String name){
+    this._name = name;
+  }
 
   String get name => this._name;
   List<CardObject> get cards => this._cards;
@@ -90,15 +101,18 @@ class DeckObject {
   // METHODS
   void addCard({String question = '', String answer = ''}) {
     this._cards.add(CardObject(question: question, answer: answer, group: 0));
+    this.save();
   }
 
   void removeCard(int index) {
     if(index >= this._cards.length || index < 0) return;
     this._cards.removeAt(index);
+    this.save();
   }
 
   void changeGroup(int cardIndex, int newGroup) {
     this._cards[cardIndex].group = newGroup;
+    this.save();
   }
 
   void shuffle() {
@@ -146,10 +160,12 @@ class DeckObject {
   void recolorCard({int group}) {
     this._currentCard.group = group;
     _cardQueues[group].add(this._currentCard);
+    this.save();
   }
 
   void resetProgress() {
     this._cards.forEach((card) => card.group = 0);
+    this.save();
   }
 
   // PRIVATE METHODS

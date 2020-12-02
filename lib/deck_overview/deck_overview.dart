@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:mindspace/definitions/colors.dart';
 import 'package:mindspace/definitions/dummydata.dart';
 import 'package:mindspace/editor/editor.dart';
@@ -18,14 +19,16 @@ class DeckOverview extends StatefulWidget {
 }
 
 class _DeckOverviewState extends State<DeckOverview> {
+  Box idDeckBox;
   DeckObject deck;
   String filter = '';
   List<int> filteredCardIndexes = [];
 
   @override
   void initState() {
-    deck = idDeckMap[widget.deckId];
     super.initState();
+    idDeckBox = Hive.box('idDeckBox');
+    deck = idDeckBox.get(widget.deckId);
   }
 
   @override

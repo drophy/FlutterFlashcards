@@ -21,12 +21,6 @@ class _EditorState extends State<Editor> {
   TextEditingController _questionInputController;
   TextEditingController _answerInputController;
 
-  // // CONTINUE . it says the context doesn't contain a Bloc/Cubit of such type
-  // void updateAncestors(){
-  //   return;
-  //   BlocProvider.of<ExplorerBloc>(context).add(UpdateEvent());
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -50,7 +44,7 @@ class _EditorState extends State<Editor> {
       ///// APP BAR /////
       appBar: AppBar(
         leading: BackButton(onPressed: () {
-          print('IT WORKED 3');
+          widget.deck.save(); // save to Hive (they MUST click on the back arrow for this to run and their changes to be saved)
           _bloc.add(UpdateEvent());
           Navigator.maybePop(
               context); // not sure of how it's different to pop(), but it says 'leading' uses this by default

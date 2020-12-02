@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:mindspace/auth/user_auth_provider.dart';
 import 'package:mindspace/definitions/colors.dart';
 import 'package:mindspace/definitions/dummydata.dart';
@@ -23,8 +24,16 @@ class _ExplorerState extends State<Explorer> {
   FolderObject _currentFolder;
   List<int> _folderIds;
   List<int> _deckIds;
+  Box _idBox;
+  Box _idFolderBox;
+  Box _idDeckBox;
+
+  // I sent the id as an argument forgetting we could get it as simply widget.currentFolderId >w<
   _ExplorerState(int currentFolderId) {
-    this._currentFolder = idFolderMap[currentFolderId];
+    this._idBox = Hive.box('idBox');
+    this._idFolderBox = Hive.box('idFolderBox');
+    this._idDeckBox = Hive.box('idDeckBox');
+    this._currentFolder = this._idFolderBox.get(currentFolderId);
     this._folderIds = this._currentFolder.folders;
     this._deckIds = this._currentFolder.decks;
   }
@@ -77,25 +86,29 @@ class _ExplorerState extends State<Explorer> {
                         setState(() {
                           if (result == 'Folder') {
                             // Add new FolderObject to map
-                            int newFolderId = nextFolderId++;
-                            idFolderMap[newFolderId] = new FolderObject(
+                            int newFolderId = _idBox.get('nextFolderId');
+                            _idBox.put('nextFolderId', newFolderId + 1);
+                            FolderObject newFolder = new FolderObject(
                               id: newFolderId,
                               name: _createNameController.text,
                               parentName: this._currentFolder.name,
                             );
+                            _idFolderBox.put(newFolderId, newFolder);
 
                             // Add it to the current folder's folders array
-                            this._currentFolder.addFolder(newFolderId);
+                            _currentFolder.addFolder(newFolderId);
                           } else {
                             // Add new DeckObject to map
-                            int newDeckId = nextDeckId++;
-                            idDeckMap[newDeckId] = new DeckObject(
+                            int newDeckId = _idBox.get('nextDeckId');
+                            _idBox.put('nextDeckId', newDeckId + 1);
+                            DeckObject newDeck = new DeckObject(
                               id: newDeckId,
                               name: _createNameController.text,
                             );
+                            _idDeckBox.put(newDeckId, newDeck);
 
                             // Add it to the current folder's folders array
-                            this._currentFolder.addDeck(newDeckId);
+                            _currentFolder.addDeck(newDeckId);
                           }
                         });
                         Navigator.of(context).pop(); // close pop up
@@ -129,7 +142,8 @@ class _ExplorerState extends State<Explorer> {
                           // TODO: Log out and return to Login page
                           globalGoogleSignIn.signOut();
                           print('ABOUT TO POP DIALOG');
-                          Navigator.of(context).pop('pop again'); // close dialog
+                          Navigator.of(context)
+                              .pop('pop again'); // close dialog
                         },
                       ),
                     ],
