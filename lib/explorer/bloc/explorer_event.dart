@@ -11,9 +11,10 @@ class UpdateEvent extends ExplorerEvent {}
 
 class PickImageEvent extends ExplorerEvent {
   final FolderObject folder;
+  final bool fromGallery;
 
-  PickImageEvent(this.folder);
+  PickImageEvent({this.folder, this.fromGallery = true});
 
   @override
-  List<Object> get props => [folder];
+  List<Object> get props => [folder, fromGallery];
 }

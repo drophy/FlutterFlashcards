@@ -7,7 +7,6 @@ import 'package:mindspace/explorer/explorer.dart';
 
 import 'package:mindspace/models/folder_object.dart';
 import 'package:mindspace/definitions/colors.dart';
-import 'package:mindspace/definitions/dummydata.dart';
 
 class Folder extends StatefulWidget {
   final int currentFolderId;
@@ -38,29 +37,29 @@ class _FolderState extends State<Folder> {
     return FlatButton(
       padding: EdgeInsets.zero,
       onPressed: () {
-        Navigator.of(context).push(
+        Navigator.of(context)
+            .push(
           MaterialPageRoute(
             builder: (context) =>
                 Explorer(currentFolderId: this.widget.currentFolderId),
           ),
-        ).then((value) {
-          if(value == 'pop again') {
-            print('ABOUT TO POP: ${_currentFolder.name}');
-            Navigator.of(context).pop('pop again');
-          }
-        });
+        )
+            .then(
+          (value) {
+            if (value == 'pop again') {
+              print('ABOUT TO POP: ${_currentFolder.name}');
+              Navigator.of(context).pop('pop again');
+            }
+          },
+        );
       },
       child: Container(
         height: 12 * vh,
         padding: EdgeInsets.symmetric(horizontal: 4 * vw),
+        // BACKGROUND IMAGE
         decoration: BoxDecoration(
-            image: DecorationImage(
-          // ty https://stackoverflow.com/questions/58427142/how-to-pass-image-asset-in-imageprovider-type
-          image: Image.asset('assets/images/fitoria.png').image,
-          fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(
-              Color.fromRGBO(0, 0, 0, 0.5), BlendMode.luminosity),
-        )),
+          image: _currentFolder.backgroundImage(),
+        ),
         child: Row(
           children: [
             // FOLDER NAME
@@ -96,6 +95,8 @@ class _FolderState extends State<Folder> {
               itemBuilder: (context) => [
                 PopupMenuItem(child: Text('Rename'), value: 'rename'),
                 PopupMenuItem(child: Text('Add image'), value: 'image'),
+                PopupMenuItem(
+                    child: Text('Remove image'), value: 'remove image'),
               ],
               onSelected: (result) {
                 if (result == 'rename') {
@@ -103,16 +104,65 @@ class _FolderState extends State<Folder> {
                     _renameFolder(context);
                   });
                 } else if (result == 'image') {
+                  _pickImage(context);
+                } else if (result == 'remove image') {
                   setState(() {
-                    // CONTINUE - make BLOC get and change the image
-                    BlocProvider.of<ExplorerBloc>(context)
-                        .add(PickImageEvent(_currentFolder));
+                    _currentFolder.removeImage();
                   });
                 }
               },
             )
           ],
         ),
+      ),
+    );
+  }
+
+  void _pickImage(context) {
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        children: [
+          SimpleDialogOption(
+            child: _pickImageOptions('From Gallery'),
+            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+            onPressed: () {
+              BlocProvider.of<ExplorerBloc>(context).add(PickImageEvent(
+                folder: _currentFolder,
+                fromGallery: true,
+              ));
+              Navigator.of(context).pop();
+            },
+          ),
+          SimpleDialogOption(
+            child: _pickImageOptions('From Camera'),
+            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+            onPressed: () {
+              BlocProvider.of<ExplorerBloc>(context).add(PickImageEvent(
+                folder: _currentFolder,
+                fromGallery: false,
+              ));
+              Navigator.of(context).pop();
+            },
+          ),
+          SimpleDialogOption(
+            child: _pickImageOptions('Cancel'),
+            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _pickImageOptions(String text) {
+    return Text(
+      text,
+      style: TextStyle(
+        color: Colors.blue,
+        fontSize: 16,
       ),
     );
   }

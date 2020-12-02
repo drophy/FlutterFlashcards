@@ -37,7 +37,7 @@ void main() async {
     print('FIRST TIME INITIALIZATION');
 
     // Create folder with Id 0
-    FolderObject rootFolder = FolderObject(id: 0, name: 'Root', parentName: 'Mindscape');
+    FolderObject rootFolder = FolderObject(id: 0, name: 'Root', parentName: 'Mindspace');
     idFolderBox.put(0, rootFolder);
 
     // Init nextFolderId and nextDeckId

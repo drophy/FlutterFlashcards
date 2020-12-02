@@ -177,10 +177,7 @@ class _ExplorerState extends State<Explorer> {
                       padding: EdgeInsets.all(16),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16),
-                        child: Image.asset(
-                          'assets/images/sinon.png',
-                          fit: BoxFit.cover,
-                        ),
+                        child: _currentFolder.detailsImage(),
                       ),
                     ),
                   ),
