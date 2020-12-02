@@ -40,6 +40,7 @@ class FolderObject extends HiveObject {
   set name(String name) {
     this._name = name;
   }
+  set parentName(String name) => this._parentName = name;
 
   set base64image(String base64image) {
     this._base64image = base64image;
@@ -73,7 +74,6 @@ class FolderObject extends HiveObject {
   }
 
   DecorationImage backgroundImage() {
-    // CONTINUE - validate it has an image
     if (_base64image == null) return null; // no decoration image
 
     return DecorationImage(

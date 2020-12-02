@@ -50,6 +50,11 @@ class _ExplorerState extends State<Explorer> {
       appBar: AppBar(
         backgroundColor: tailwindGray900,
         title: Text('${this._currentFolder.parentName}'),
+        automaticallyImplyLeading: false,
+        leading: widget.currentFolderId == 0? null : BackButton(onPressed: () {
+          Navigator.maybePop(
+              context); // not sure of how it's different to pop(), but it says 'leading' uses this by default
+        }),
         actions: [
           IconButton(
             color: tailwindGray100,
